@@ -1,0 +1,53 @@
+int cols;
+int rows;
+float[][] current;// = new float[cols][rows];
+float[][] previous;// = new float[cols][rows];
+float dampening = 0.9999;
+PFont myFont1;
+PFont myFont2;
+
+void setup() {
+  size(500, 500);
+  cols = width;
+  rows = height;
+  current = new float[cols][rows];
+  previous = new float[cols][rows];
+  myFont1 = createFont( "Oswald", 9 );
+  myFont2 = createFont( "Oswald", 20 );
+}
+
+void mouseDragged() {
+  previous[mouseX][mouseY] = 1000;
+}
+
+void draw() {
+  background(0);
+ 
+  loadPixels();
+  for (int i = 1; i < cols-1; i++) {
+    for (int j = 1; j < rows-1; j++) {
+      current[i][j] = (
+        previous[i-1][j] + 
+        previous[i+1][j] +
+        previous[i][j-1] + 
+        previous[i][j+1]) / 2 -
+        current[i][j];
+        current[i][j] = current[i][j] * dampening;
+      int index = i + j * cols;
+      pixels[index] = color(current[i][j]);
+    }
+  }
+  updatePixels();
+
+  float[][] temp = previous;
+  previous = current;
+  current = temp;
+
+  fill(255);
+  textAlign(CENTER);
+  textFont( myFont1 );
+  text("NUMBER", 50, 35);
+  text("shumpei0407", 440, 470);
+  textFont( myFont2 );
+  text("229", 50, 54);
+}
